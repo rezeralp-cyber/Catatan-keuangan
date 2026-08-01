@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buku Kas — Riwayat</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="buku">
+  <div class="sampul">
+    <h1>Buku Kas</h1>
+    <p class="sub">Riwayat total per bulan</p>
+    <nav class="tab-nav">
+      <a href="index.html">Catat</a>
+      <a href="riwayat.html" class="aktif">Riwayat</a>
+    </nav>
+  </div>
+
+  <main>
+    <div id="isiRiwayat"></div>
+    <p class="catatan-info">Bulan baru otomatis mulai menghitung dari nol begitu tanggal berganti bulan. Riwayat di sini tersimpan di perangkat ini saja.</p>
+  </main>
+</div>
+
+<script src="app.js"></script>
+<script>
+  cekPergantianBulan();
+
+  const wadah = document.getElementById('isiRiwayat');
+  const riwayat = ambilArray(KEY_RIWAYAT);
+
+  if (riwayat.length === 0) {
+    wadah.innerHTML = '<div class="kosong">Belum ada riwayat bulan sebelumnya. Riwayat akan muncul otomatis setelah bulan berganti.</div>';
+  } else {
+    wadah.innerHTML = riwayat.map(r => `
+      <div class="kartu-bulan">
+        <p class="nama-bulan">${labelBulan(r.bulan)}</p>
+        <div class="baris-ringkas">
+          <span>Pemasukan</span>
+          <span class="v" style="color:#6FA383">${formatRupiah(r.masuk)}</span>
+        </div>
+        <div class="baris-ringkas">
+          <span>Pengeluaran</span>
+          <span class="v" style="color:#B57468">${formatRupiah(r.keluar)}</span>
+        </div>
+        <div class="baris-ringkas garis-total">
+          <span>Saldo akhir</span>
+          <span class="v ${r.saldo >= 0 ? 'saldo-positif' : 'saldo-negatif'}">${formatRupiah(r.saldo)}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+</script>
+</body>
+</html>

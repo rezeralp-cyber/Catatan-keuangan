@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Buku Kas — Catat</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="buku">
+  <div class="sampul">
+    <h1>Buku Kas</h1>
+    <p class="sub" id="labelBulanAktif">—</p>
+    <nav class="tab-nav">
+      <a href="index.html" class="aktif">Catat</a>
+      <a href="riwayat.html">Riwayat</a>
+    </nav>
+  </div>
+
+  <main>
+    <div class="kartu-saldo">
+      <p class="label">Saldo bulan ini</p>
+      <p class="angka" id="saldoBulanIni">Rp0</p>
+      <div class="ringkas-baris">
+        <div class="ringkas-item masuk">
+          <div class="l">Pemasukan</div>
+          <div class="n" id="totalMasuk">Rp0</div>
+        </div>
+        <div class="ringkas-item keluar">
+          <div class="l">Pengeluaran</div>
+          <div class="n" id="totalKeluar">Rp0</div>
+        </div>
+      </div>
+    </div>
+
+    <form class="form-catat" id="formCatat">
+      <div class="jenis-toggle">
+        <button type="button" class="pilih-masuk aktif" data-jenis="masuk">↓ Pemasukan</button>
+        <button type="button" class="pilih-keluar" data-jenis="keluar">↑ Pengeluaran</button>
+      </div>
+
+      <label for="inputNominal">Nominal (Rp)</label>
+      <input type="number" id="inputNominal" inputmode="numeric" placeholder="cth. 50000" min="1" required>
+
+      <label for="inputKeterangan">Keterangan (opsional)</label>
+      <input type="text" id="inputKeterangan" placeholder="cth. jajan, gaji, bensin">
+
+      <button type="submit" class="btn-simpan">Simpan Catatan</button>
+    </form>
+
+    <p class="judul-daftar">Catatan bulan ini</p>
+    <div class="daftar" id="daftarTransaksi"></div>
+
+    <p class="catatan-info">Tanggal & bulan tercatat otomatis saat kamu menyimpan. Setiap ganti bulan, catatan bulan lalu otomatis ditotal dan dipindah ke halaman Riwayat, lalu catatan di sini mulai dari nol lagi.</p>
+  </main>
+</div>
+
+<script src="app.js"></script>
+<script>
+  cekPergantianBulan();
+
+  let jenisDipilih = 'masuk';
+  const $ = (id) => document.getElementById(id);
+
+  document.querySelectorAll('.jenis-toggle button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      jenisDipilih = btn.dataset.jenis;
+      document.querySelectorAll('.jenis-toggle button').forEach(b => b.classList.remove('aktif'));
+      btn.classList.add('aktif');
+    });
+  });
+
+  function render() {
+    const bulanAktif = localStorage.getItem(KEY_BULAN_AKTIF);
+    $('labelBulanAktif').textContent = bulanAktif ? labelBulan(bulanAktif) : '';
+
+    const r = ringkasBulanIni();
+    $('totalMasuk').textContent = formatRupiah(r.masuk);
+    $('totalKeluar').textContent = formatRupiah(r.keluar);
+    $('saldoBulanIni').textContent = formatRupiah(r.saldo);
+
+    const wadah = $('daftarTransaksi');
+    if (r.list.length === 0) {
+      wadah.innerHTML = '<div class="kosong">Belum ada catatan bulan ini.</div>';
+      return;
+    }
+
+    wadah.innerHTML = r.list.map(t => `
+      <div class="baris">
+        <div class="tgl">${formatTanggalIndo(t.tanggal)}</div>
+        <div class="ket">${t.keterangan ? t.keterangan : (t.jenis === 'masuk' ? 'Pemasukan' : 'Pengeluaran')}</div>
+        <div class="nom ${t.jenis}">${t.jenis === 'masuk' ? '+' : '-'}${formatRupiah(t.nominal)}</div>
+        <button class="hapus" data-id="${t.id}" title="Hapus catatan">✕</button>
+      </div>
+    `).join('');
+
+    wadah.querySelectorAll('.hapus').forEach(btn => {
+      btn.addEventListener('click', () => {
+        hapusTransaksi(Number(btn.dataset.id));
+        render();
+      });
+    });
+  }
+
+  $('formCatat').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const nominal = $('inputNominal').value;
+    const keterangan = $('inputKeterangan').value.trim();
+    if (!nominal || Number(nominal) <= 0) return;
+
+    tambahTransaksi(jenisDipilih, nominal, keterangan);
+
+    $('inputNominal').value = '';
+    $('inputKeterangan').value = '';
+    render();
+  });
+
+  render();
+</script>
+</body>
+</html>
