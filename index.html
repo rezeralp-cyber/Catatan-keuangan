@@ -45,16 +45,13 @@
       <label for="inputKeterangan">Keterangan (opsional)</label>
       <input type="text" id="inputKeterangan" placeholder="cth. jajan, gaji, bensin">
 
-      <label for="inputTanggal">Tanggal</label>
-      <input type="date" id="inputTanggal" required>
-
       <button type="submit" class="btn-simpan">Simpan Catatan</button>
     </form>
 
     <p class="judul-daftar">Catatan bulan ini</p>
     <div class="daftar" id="daftarTransaksi"></div>
 
-    <p class="catatan-info">Setiap ganti bulan, catatan bulan lalu otomatis ditotal dan dipindah ke halaman Riwayat, lalu catatan di sini mulai dari nol lagi.</p>
+    <p class="catatan-info">Tanggal & bulan tercatat otomatis saat kamu menyimpan. Setiap ganti bulan, catatan bulan lalu otomatis ditotal dan dipindah ke halaman Riwayat, lalu catatan di sini mulai dari nol lagi.</p>
   </main>
 </div>
 
@@ -64,8 +61,6 @@
 
   let jenisDipilih = 'masuk';
   const $ = (id) => document.getElementById(id);
-
-  $('inputTanggal').value = new Date().toISOString().slice(0, 10);
 
   document.querySelectorAll('.jenis-toggle button').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -79,21 +74,18 @@
     const bulanAktif = localStorage.getItem(KEY_BULAN_AKTIF);
     $('labelBulanAktif').textContent = bulanAktif ? labelBulan(bulanAktif) : '';
 
-    const list = ambilArray(KEY_TRANSAKSI);
-    const masuk = list.filter(t => t.jenis === 'masuk').reduce((a, t) => a + t.nominal, 0);
-    const keluar = list.filter(t => t.jenis === 'keluar').reduce((a, t) => a + t.nominal, 0);
-
-    $('totalMasuk').textContent = formatRupiah(masuk);
-    $('totalKeluar').textContent = formatRupiah(keluar);
-    $('saldoBulanIni').textContent = formatRupiah(masuk - keluar);
+    const r = ringkasBulanIni();
+    $('totalMasuk').textContent = formatRupiah(r.masuk);
+    $('totalKeluar').textContent = formatRupiah(r.keluar);
+    $('saldoBulanIni').textContent = formatRupiah(r.saldo);
 
     const wadah = $('daftarTransaksi');
-    if (list.length === 0) {
+    if (r.list.length === 0) {
       wadah.innerHTML = '<div class="kosong">Belum ada catatan bulan ini.</div>';
       return;
     }
 
-    wadah.innerHTML = list.map(t => `
+    wadah.innerHTML = r.list.map(t => `
       <div class="baris">
         <div class="tgl">${formatTanggalIndo(t.tanggal)}</div>
         <div class="ket">${t.keterangan ? t.keterangan : (t.jenis === 'masuk' ? 'Pemasukan' : 'Pengeluaran')}</div>
@@ -114,10 +106,9 @@
     e.preventDefault();
     const nominal = $('inputNominal').value;
     const keterangan = $('inputKeterangan').value.trim();
-    const tanggal = $('inputTanggal').value;
     if (!nominal || Number(nominal) <= 0) return;
 
-    tambahTransaksi(jenisDipilih, nominal, keterangan, tanggal);
+    tambahTransaksi(jenisDipilih, nominal, keterangan);
 
     $('inputNominal').value = '';
     $('inputKeterangan').value = '';

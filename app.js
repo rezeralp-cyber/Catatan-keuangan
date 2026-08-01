@@ -1,10 +1,11 @@
-/* ================= Buku Kas — logika inti ================= */
+/* ================= Catatan Keuangan — logika inti ================= */
 
-const KEY_TRANSAKSI = 'bukukas_transaksi';
-const KEY_RIWAYAT = 'bukukas_riwayat';
-const KEY_BULAN_AKTIF = 'bukukas_bulan_aktif';
+const KEY_TRANSAKSI = 'ck_transaksi';
+const KEY_RIWAYAT = 'ck_riwayat';
+const KEY_BULAN_AKTIF = 'ck_bulan_aktif';
 
 const NAMA_BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const NAMA_HARI = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 
 function bulanKeyDari(date) {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}`;
@@ -67,14 +68,17 @@ function cekPergantianBulan() {
   }
 }
 
-function tambahTransaksi(jenis, nominal, keterangan, tanggalISO) {
+/* Tanggal & bulan selalu diambil otomatis dari waktu saat disimpan —
+   pengguna tidak perlu memilih tanggal sendiri. */
+function tambahTransaksi(jenis, nominal, keterangan) {
+  const sekarang = new Date();
   const list = ambilArray(KEY_TRANSAKSI);
   list.unshift({
     id: Date.now(),
     jenis,
     nominal: Number(nominal),
     keterangan: keterangan || '',
-    tanggal: tanggalISO
+    tanggal: sekarang.toISOString().slice(0, 10)
   });
   simpanArray(KEY_TRANSAKSI, list);
 }
@@ -86,5 +90,12 @@ function hapusTransaksi(id) {
 
 function formatTanggalIndo(tanggalISO) {
   const d = new Date(tanggalISO + 'T00:00:00');
-  return `${d.getDate()} ${NAMA_BULAN[d.getMonth()]} ${d.getFullYear()}`;
+  return `${NAMA_HARI[d.getDay()]}, ${d.getDate()} ${NAMA_BULAN[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function ringkasBulanIni() {
+  const list = ambilArray(KEY_TRANSAKSI);
+  const masuk = list.filter(t => t.jenis === 'masuk').reduce((a, t) => a + t.nominal, 0);
+  const keluar = list.filter(t => t.jenis === 'keluar').reduce((a, t) => a + t.nominal, 0);
+  return { masuk, keluar, saldo: masuk - keluar, list };
 }

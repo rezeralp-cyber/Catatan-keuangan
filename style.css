@@ -1,17 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:wght@500;600&family=IBM+Plex+Mono:wght@500;600&family=IBM+Plex+Sans:wght@400;500&display=swap');
 
 :root {
-  --sampul: #0E3B2E;
-  --sampul-gelap: #092A21;
-  --kertas: #F4F0E4;
-  --garis: #D8CFB8;
-  --tinta: #1C2B24;
-  --tinta-pudar: #5B6B62;
-  --emas: #B08A2E;
-  --masuk: #1E6B4C;
-  --keluar: #A13D2C;
-  --masuk-bg: #E5F0E8;
-  --keluar-bg: #F5E7E2;
+  --bg: #121214;
+  --sampul: #1B1B1F;
+  --kertas: #17171B;
+  --kartu: #1E1E23;
+  --input-bg: #232228;
+  --garis: #2E2D34;
+  --teks: #E4E1DC;
+  --teks-redup: #8E8C93;
+  --aksen: #A6906B;
+  --masuk: #6FA383;
+  --masuk-bg: rgba(111,163,131,0.12);
+  --keluar: #B57468;
+  --keluar-bg: rgba(181,116,104,0.12);
   --radius: 10px;
 }
 
@@ -20,8 +22,8 @@
 body {
   margin: 0;
   font-family: 'IBM Plex Sans', system-ui, sans-serif;
-  background: var(--sampul);
-  color: var(--tinta);
+  background: var(--bg);
+  color: var(--teks);
   min-height: 100vh;
 }
 
@@ -30,58 +32,57 @@ body {
   margin: 0 auto;
   min-height: 100vh;
   background: var(--kertas);
-  box-shadow: 0 0 40px rgba(0,0,0,0.35);
   display: flex;
   flex-direction: column;
 }
 
-/* Sampul / header ala buku kas */
+/* Header */
 .sampul {
-  background: linear-gradient(180deg, var(--sampul), var(--sampul-gelap));
-  color: var(--kertas);
-  padding: 22px 20px 16px;
-  position: relative;
+  background: var(--sampul);
+  color: var(--teks);
+  padding: 22px 20px 0;
+  border-bottom: 1px solid var(--garis);
 }
 
 .sampul h1 {
   font-family: 'Fraunces', serif;
   font-weight: 600;
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   margin: 0 0 2px;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
 }
 
 .sampul .sub {
   font-size: 0.78rem;
-  color: #C9D6CD;
-  margin: 0;
+  color: var(--teks-redup);
+  margin: 0 0 16px;
 }
 
-/* Tab navigasi seperti pembatas halaman buku */
+/* Tab navigasi */
 .tab-nav {
   display: flex;
-  gap: 6px;
-  margin-top: 16px;
+  gap: 4px;
 }
 
 .tab-nav a {
   flex: 1;
   text-align: center;
-  padding: 9px 8px;
+  padding: 11px 8px;
   border-radius: 8px 8px 0 0;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 500;
   text-decoration: none;
-  color: #C9D6CD;
-  background: rgba(255,255,255,0.06);
-  border: 1px solid rgba(255,255,255,0.12);
+  color: var(--teks-redup);
+  background: transparent;
+  border: 1px solid transparent;
   border-bottom: none;
 }
 
 .tab-nav a.aktif {
   background: var(--kertas);
-  color: var(--sampul-gelap);
+  color: var(--teks);
   font-weight: 600;
+  border-color: var(--garis);
 }
 
 main {
@@ -89,9 +90,9 @@ main {
   padding: 18px 18px 40px;
 }
 
-/* Kartu saldo — seperti stempel total di buku kas */
+/* Kartu saldo */
 .kartu-saldo {
-  background: #fff;
+  background: var(--kartu);
   border: 1px solid var(--garis);
   border-radius: var(--radius);
   padding: 16px 18px;
@@ -99,18 +100,19 @@ main {
 }
 
 .kartu-saldo .label {
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  color: var(--tinta-pudar);
+  color: var(--teks-redup);
   margin: 0 0 2px;
 }
 
 .kartu-saldo .angka {
   font-family: 'IBM Plex Mono', monospace;
   font-weight: 600;
-  font-size: 1.9rem;
+  font-size: 1.85rem;
   margin: 0;
+  color: var(--teks);
 }
 
 .ringkas-baris {
@@ -129,7 +131,7 @@ main {
 .ringkas-item.keluar { background: var(--keluar-bg); }
 
 .ringkas-item .l {
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   text-transform: uppercase;
   letter-spacing: 0.06em;
 }
@@ -139,7 +141,7 @@ main {
 .ringkas-item .n {
   font-family: 'IBM Plex Mono', monospace;
   font-weight: 600;
-  font-size: 1rem;
+  font-size: 0.98rem;
   margin-top: 2px;
 }
 .ringkas-item.masuk .n { color: var(--masuk); }
@@ -147,7 +149,7 @@ main {
 
 /* Form input */
 .form-catat {
-  background: #fff;
+  background: var(--kartu);
   border: 1px solid var(--garis);
   border-radius: var(--radius);
   padding: 16px;
@@ -157,20 +159,20 @@ main {
 .jenis-toggle {
   display: flex;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
 }
 
 .jenis-toggle button {
   flex: 1;
   padding: 10px;
   border-radius: 8px;
-  border: 1.5px solid var(--garis);
-  background: #fff;
+  border: 1px solid var(--garis);
+  background: var(--input-bg);
   font-family: inherit;
   font-weight: 500;
-  font-size: 0.88rem;
+  font-size: 0.87rem;
   cursor: pointer;
-  color: var(--tinta-pudar);
+  color: var(--teks-redup);
 }
 
 .jenis-toggle button.pilih-masuk.aktif {
@@ -186,29 +188,29 @@ main {
 
 label {
   display: block;
-  font-size: 0.75rem;
-  color: var(--tinta-pudar);
+  font-size: 0.76rem;
+  color: var(--teks-redup);
   margin: 10px 0 4px;
 }
 
-input[type="text"], input[type="number"], input[type="date"] {
+input[type="text"], input[type="number"] {
   width: 100%;
-  padding: 10px 12px;
-  border: 1.5px solid var(--garis);
+  padding: 11px 12px;
+  border: 1px solid var(--garis);
   border-radius: 8px;
   font-family: 'IBM Plex Sans', sans-serif;
   font-size: 0.95rem;
-  background: #FDFCF8;
-  color: var(--tinta);
+  background: var(--input-bg);
+  color: var(--teks);
 }
 
-input[type="number"] {
-  font-family: 'IBM Plex Mono', monospace;
-}
+input[type="number"] { font-family: 'IBM Plex Mono', monospace; }
+input::placeholder { color: #64626B; }
 
 input:focus {
-  outline: 2px solid var(--emas);
-  outline-offset: 1px;
+  outline: none;
+  border-color: var(--aksen);
+  box-shadow: 0 0 0 3px rgba(166,144,107,0.15);
 }
 
 .btn-simpan {
@@ -217,26 +219,26 @@ input:focus {
   padding: 12px;
   border: none;
   border-radius: 8px;
-  background: var(--sampul);
-  color: var(--kertas);
+  background: var(--aksen);
+  color: #17171B;
   font-family: inherit;
   font-weight: 600;
   font-size: 0.95rem;
   cursor: pointer;
 }
-.btn-simpan:active { background: var(--sampul-gelap); }
+.btn-simpan:active { filter: brightness(0.92); }
 
-/* Daftar transaksi ala baris buku kas bergaris */
+/* Daftar transaksi */
 .judul-daftar {
   font-family: 'Fraunces', serif;
-  font-size: 0.95rem;
+  font-size: 0.92rem;
   font-weight: 600;
   margin: 0 0 8px;
-  color: var(--sampul-gelap);
+  color: var(--teks);
 }
 
 .daftar {
-  background: #fff;
+  background: var(--kartu);
   border: 1px solid var(--garis);
   border-radius: var(--radius);
   overflow: hidden;
@@ -253,15 +255,15 @@ input:focus {
 
 .baris .tgl {
   font-size: 0.68rem;
-  color: var(--tinta-pudar);
-  width: 64px;
+  color: var(--teks-redup);
+  width: 66px;
   flex-shrink: 0;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 
 .baris .ket {
   flex: 1;
-  font-size: 0.88rem;
+  font-size: 0.87rem;
   min-width: 0;
   overflow-wrap: break-word;
 }
@@ -278,7 +280,7 @@ input:focus {
 .baris .hapus {
   border: none;
   background: none;
-  color: #B0A98F;
+  color: #55535B;
   font-size: 1.1rem;
   cursor: pointer;
   padding: 2px 4px;
@@ -289,13 +291,13 @@ input:focus {
 .kosong {
   padding: 26px 14px;
   text-align: center;
-  color: var(--tinta-pudar);
+  color: var(--teks-redup);
   font-size: 0.85rem;
 }
 
 /* Riwayat bulan */
 .kartu-bulan {
-  background: #fff;
+  background: var(--kartu);
   border: 1px solid var(--garis);
   border-radius: var(--radius);
   padding: 14px 16px;
@@ -305,8 +307,8 @@ input:focus {
 .kartu-bulan .nama-bulan {
   font-family: 'Fraunces', serif;
   font-weight: 600;
-  font-size: 1.02rem;
-  color: var(--sampul-gelap);
+  font-size: 1rem;
+  color: var(--teks);
   margin: 0 0 8px;
 }
 
@@ -315,6 +317,7 @@ input:focus {
   justify-content: space-between;
   font-size: 0.85rem;
   padding: 3px 0;
+  color: var(--teks-redup);
 }
 
 .kartu-bulan .baris-ringkas .v {
@@ -326,6 +329,7 @@ input:focus {
   border-top: 1px dashed var(--garis);
   margin-top: 6px;
   padding-top: 6px;
+  color: var(--teks);
 }
 
 .kartu-bulan .saldo-positif { color: var(--masuk); }
@@ -333,7 +337,7 @@ input:focus {
 
 .catatan-info {
   font-size: 0.72rem;
-  color: var(--tinta-pudar);
+  color: var(--teks-redup);
   text-align: center;
   margin-top: 20px;
   line-height: 1.5;
